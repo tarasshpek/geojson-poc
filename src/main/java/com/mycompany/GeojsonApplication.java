@@ -1,12 +1,12 @@
-package geojson;
+package com.mycompany;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class GeojsonTestApplication {
+public class GeojsonApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GeojsonTestApplication.class, args);
+		SpringApplication.run(GeojsonApplication.class, args);
 	}
 }
