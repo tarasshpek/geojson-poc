@@ -10,16 +10,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -27,8 +33,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class WeatherStationControllerTest {
-
-    private static final LngLatAlt LVIV_LOCATION = new LngLatAlt(24.0297, 49.8397);
 
     @Autowired
     private WebApplicationContext wac;
@@ -54,31 +58,19 @@ public class WeatherStationControllerTest {
     }
 
     @Test
-    public void testGetStationsWithoutProximityParameter() throws Exception {
-        MvcResult result = mockMvc.perform(
-                get("/weatherstations")
-                        .param("latitude", Double.toString(LVIV_LOCATION.getLatitude()))
-                        .param("longitude", Double.toString(LVIV_LOCATION.getLongitude())))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith("application/json"))
-                .andReturn();
-
-        List<Feature> features = featuresFromJson(result.getResponse().getContentAsString());
-        assertThat(features.size()).isEqualTo(1);
-        testFeature(features.get(0), stations.get(0));
-    }
-
-    @Test
     public void testGetStationsWithProximityParameter() throws Exception {
+        //Given
+        byte[] encoded = Files.readAllBytes(Paths.get("src/test/resources/five_weather_stations.json"));
+        String json = new String(encoded, "UTF-8");
+        //When
         MvcResult result = mockMvc.perform(
-                get("/weatherstations")
-                        .param("latitude", Double.toString(LVIV_LOCATION.getLatitude()))
-                        .param("longitude", Double.toString(LVIV_LOCATION.getLongitude()))
-                        .param("proximity", "10000"))
+                put("/weatherstations")
+                        .contentType("application/json")
+                        .content(json))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("application/json"))
                 .andReturn();
-
+        //Then
         List<Feature> features = featuresFromJson(result.getResponse().getContentAsString());
         assertThat(features.size()).isEqualTo(5);
         testFeature(features.get(0), stations.get(0));

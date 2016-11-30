@@ -1,13 +1,16 @@
 package com.mycompany.repositories;
 
+import com.mycompany.models.SpeedUnit;
+import com.mycompany.models.TemperatureUnit;
 import com.mycompany.models.Weather;
 import com.mycompany.models.WeatherStation;
 import org.springframework.stereotype.Component;
-import uk.co.jemos.podam.api.PodamFactory;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 public class MockedWeatherStationRepository implements WeatherStationRepository {
@@ -34,8 +37,12 @@ public class MockedWeatherStationRepository implements WeatherStationRepository 
     }
 
     private static Weather generateRandomWeather(){
-        PodamFactory factory = new PodamFactoryImpl();
-        Weather weather = factory.manufacturePojo(Weather.class);
+        Weather weather = new Weather();
+        weather.setTime(new Date());
+        weather.setTemperatureUnit(TemperatureUnit.values()[ThreadLocalRandom.current().nextInt(0, TemperatureUnit.values().length)]);
+        weather.setWindspeedUnit(SpeedUnit.values()[ThreadLocalRandom.current().nextInt(0, SpeedUnit.values().length)]);
+        weather.setTemperature(new BigDecimal(ThreadLocalRandom.current().nextInt(0, 20)));
+        weather.setWindspeed(new BigDecimal(ThreadLocalRandom.current().nextInt(0, 20)));
         return weather;
     }
 

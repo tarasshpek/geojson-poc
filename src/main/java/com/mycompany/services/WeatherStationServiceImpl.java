@@ -1,5 +1,6 @@
 package com.mycompany.services;
 
+import com.mycompany.models.Coordinates;
 import com.mycompany.models.DistanceUnit;
 import com.mycompany.models.WeatherStation;
 import com.mycompany.repositories.WeatherStationRepository;
@@ -26,7 +27,7 @@ public class WeatherStationServiceImpl implements WeatherStationService {
     private double proximity;
 
     @Override
-    public List<WeatherStation> getStationsWithProximity(List<LngLatAlt> coordinates) {
+    public List<WeatherStation> getStationsWithProximity(List<Coordinates> coordinates) {
         DistancePredicate predicate = new DistancePredicate(distanceUnit, proximity, coordinates);
         return repository.findAll().stream().filter(predicate).collect(Collectors.toList());
     }

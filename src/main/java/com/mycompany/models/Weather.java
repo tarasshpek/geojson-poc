@@ -12,7 +12,7 @@ public class Weather {
 
     private BigDecimal windspeed;
 
-    private DistanceUnit windspeedUnit;
+    private SpeedUnit windspeedUnit;
 
     private BigDecimal temperature;
 

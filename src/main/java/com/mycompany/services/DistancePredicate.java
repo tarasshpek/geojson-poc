@@ -1,5 +1,6 @@
 package com.mycompany.services;
 
+import com.mycompany.models.Coordinates;
 import com.mycompany.models.DistanceUnit;
 import com.mycompany.models.WeatherStation;
 import com.mycompany.utils.DistanceUtils;
@@ -14,9 +15,9 @@ public class DistancePredicate implements Predicate<WeatherStation> {
 
     private double proximity;
 
-    private List<LngLatAlt> coordinates;
+    private List<Coordinates> coordinates;
 
-    public DistancePredicate(DistanceUnit unit, double proximity, List<LngLatAlt> coordinates) {
+    public DistancePredicate(DistanceUnit unit, double proximity, List<Coordinates> coordinates) {
         this.unit = unit;
         this.proximity = proximity;
         this.coordinates = coordinates;
@@ -24,8 +25,8 @@ public class DistancePredicate implements Predicate<WeatherStation> {
 
     @Override
     public boolean test(WeatherStation weatherStation){
-        for (LngLatAlt lngLatAlt : coordinates){
-            if (test(weatherStation, lngLatAlt.getLatitude(), lngLatAlt.getLongitude())){
+        for (Coordinates c : coordinates){
+            if (test(weatherStation, c.getLatitude(), c.getLongitude())){
                 return true;
             }
         }
