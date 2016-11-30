@@ -4,27 +4,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.models.WeatherStation;
 import com.mycompany.repositories.WeatherStationRepository;
 import org.geojson.Feature;
-import org.geojson.LngLatAlt;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,6 +29,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @SpringBootTest
 public class WeatherStationControllerTest {
 
+    private static final String FIVE_REAL_AND_ONE_INCORRECT_COORDINATES_JSON = "src/test/resources/five_real_and_one_incorrect_coordinates.json";
+    private static final String APPLICATION_JSON = "application/json";
     @Autowired
     private WebApplicationContext wac;
 
@@ -58,17 +55,17 @@ public class WeatherStationControllerTest {
     }
 
     @Test
-    public void testGetStationsWithProximityParameter() throws Exception {
+    public void testUpdateWeather() throws Exception {
         //Given
-        byte[] encoded = Files.readAllBytes(Paths.get("src/test/resources/five_weather_stations.json"));
-        String json = new String(encoded, "UTF-8");
+        byte[] jsonRequestEncoded = Files.readAllBytes(Paths.get(FIVE_REAL_AND_ONE_INCORRECT_COORDINATES_JSON));
+        String jsonRequest = new String(jsonRequestEncoded, "UTF-8");
         //When
         MvcResult result = mockMvc.perform(
-                put("/weatherstations")
-                        .contentType("application/json")
-                        .content(json))
+                put("/weather")
+                        .contentType(APPLICATION_JSON)
+                        .content(jsonRequest))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith("application/json"))
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
                 .andReturn();
         //Then
         List<Feature> features = featuresFromJson(result.getResponse().getContentAsString());

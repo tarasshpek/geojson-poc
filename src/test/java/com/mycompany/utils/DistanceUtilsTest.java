@@ -4,7 +4,7 @@ import com.mycompany.models.DistanceUnit;
 import org.geojson.LngLatAlt;
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.*;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class DistanceUtilsTest {
 

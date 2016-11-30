@@ -1,13 +1,10 @@
 package com.mycompany.services;
 
 import com.mycompany.models.Coordinates;
-import com.mycompany.models.DistanceUnit;
 import com.mycompany.models.WeatherStation;
 import com.mycompany.repositories.WeatherStationRepository;
 import org.geojson.Feature;
-import org.geojson.LngLatAlt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,15 +17,13 @@ public class WeatherStationServiceImpl implements WeatherStationService {
     @Autowired
     private WeatherStationRepository repository;
 
-    @Value("${geojson.proximity.unit}")
-    private DistanceUnit distanceUnit;
-
-    @Value("${geojson.proximity}")
-    private double proximity;
+    @Autowired
+    private ProximityService proximityService;
 
     @Override
     public List<WeatherStation> getStationsWithProximity(List<Coordinates> coordinates) {
-        DistancePredicate predicate = new DistancePredicate(distanceUnit, proximity, coordinates);
+        DistancePredicate predicate = new DistancePredicate(proximityService.getUnit(),
+                proximityService.getProximity(), coordinates);
         return repository.findAll().stream().filter(predicate).collect(Collectors.toList());
     }
 

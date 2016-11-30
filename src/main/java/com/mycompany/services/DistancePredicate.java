@@ -4,7 +4,6 @@ import com.mycompany.models.Coordinates;
 import com.mycompany.models.DistanceUnit;
 import com.mycompany.models.WeatherStation;
 import com.mycompany.utils.DistanceUtils;
-import org.geojson.LngLatAlt;
 
 import java.util.List;
 import java.util.function.Predicate;
